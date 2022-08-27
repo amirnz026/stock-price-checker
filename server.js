@@ -3,7 +3,7 @@ require('dotenv').config();
 const express     = require('express');
 const bodyParser  = require('body-parser');
 const cors        = require('cors');
-
+const mongoose = require('mongoose');
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
@@ -27,7 +27,7 @@ app.route('/')
 fccTestingRoutes(app);
 
 //Routing for API 
-apiRoutes(app);  
+app.use('/api', apiRoutes)
     
 //404 Not Found Middleware
 app.use(function(req, res, next) {
@@ -35,7 +35,12 @@ app.use(function(req, res, next) {
     .type('text')
     .send('Not Found');
 });
-
+mongoose.connect(process.env.DB_CONNECTION, {
+  useNewUrlParser: true,
+});
+const db = mongoose.connection;
+db.on('error', (error) => console.error(error))
+db.once('open', () => console.log('connected to db'))
 //Start our server and tests!
 const listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
