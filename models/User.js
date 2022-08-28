@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const userSchema = new mongoose.Schema({
-    ip: 'String', liked_stocks: ['String']
+const UserSchema = new mongoose.Schema({
+    hashedIp: {type: String, required: true}, likedStocks: {type: [String], required: true}
 })
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model('User', UserSchema)
